@@ -1,13 +1,25 @@
 <template>
-	<nav class="fixed top-0 left-0 h-screen w-40 flex flex-col
-		bg-slate-200">
-		<router-link to="/">Home</router-link>
-		<router-link to="/generate">Generate</router-link>
+	<nav class="sticky top-0 h-screen w-60 flex flex-col
+		bg-gray-500 text-white p-2">
+		<div class="flex justify-center items-center m-2">
+			<div class="w-10 h-10 rounded-full flex justify-center items-center
+			hover:bg-green-400 active:bg-green-500 cursor-pointer transition-all">
+				<font-awesome-icon icon="fa-solid fa-bars" />
+			</div>
+		</div>
+		<NavButton to="/" icon="home">Home</NavButton>
+		<NavButton to="/generate" icon="gears">Generator</NavButton>
 	</nav>
-	<router-view></router-view>
 </template>
 
 
 <script>
+import NavButton from "./NavButton.vue";
+
+export default {
+	components: {
+		NavButton,
+	}
+}
 
 </script>

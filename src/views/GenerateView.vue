@@ -1,5 +1,15 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
+  <div>
+    <ClassGenerator />
   </div>
 </template>
+
+<script>
+import ClassGenerator from "@/components/ClassGenerator.vue";
+
+export default {
+  components: {
+    ClassGenerator,
+  },
+}
+</script>
