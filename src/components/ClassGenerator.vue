@@ -1,18 +1,19 @@
 <template>
-	<div class="flex columns-2 p-4 w-full h-full">
+	<div class="flex columns-2 p-4 w-full h-screen">
 		<div class="flex flex-col w-3/5">
 			<div v-for="(def, index) in classDefinitions" :key="index">
 				<ClassDefinition :dataProp="def"></ClassDefinition>
 			</div>
 		</div>
-		<div class="flex flex-col">
-			hello2
+		<div class="flex flex-col w-2/5">
+			<ClassCode :class-defs="classDefinitions" class="" />
 		</div>
 	</div>
 </template>
 
 <script>
 import ClassDefinition from './ClassDefinition.vue';
+import ClassCode from './ClassCode.vue';
 export default {
 	data() {
 		return {
@@ -35,7 +36,8 @@ export default {
 		};
 	},
 	components: {
-		ClassDefinition
+		ClassDefinition,
+		ClassCode
 	}
 }
 </script>
