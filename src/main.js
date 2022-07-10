@@ -1,6 +1,16 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
+import PrimeVue from 'primevue/config';
+
+import Checkbox from 'primevue/checkbox';
+import InputText from 'primevue/inputtext';
+import Dropdown from 'primevue/dropdown';
+import Button from 'primevue/button'
+
+import 'primevue/resources/themes/saga-green/theme.css';
+import 'primevue/resources/primevue.min.css';
+import 'primeicons/primeicons.css';
 import './index.css'
 
 /* import the fontawesome core */
@@ -16,4 +26,8 @@ import { faHome, faGears, faBars } from '@fortawesome/free-solid-svg-icons'
 /* add icons to the library */
 library.add(faHome, faGears, faBars)
 
-createApp(App).use(router).component('font-awesome-icon', FontAwesomeIcon).mount('#app')
+createApp(App)
+	.use(router).use(PrimeVue)
+	.component('dropdown', Dropdown).component('input-text', InputText).component('checkbox', Checkbox).component('Button', Button)
+	.component('font-awesome-icon', FontAwesomeIcon)
+	.mount('#app')
