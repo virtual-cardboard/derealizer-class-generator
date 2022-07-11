@@ -1,5 +1,12 @@
 # derealizer-class-generator
 
+---
+A website for generating Serializable java classes, which will eventually be deployed to https://virtual-cardboard.github.io/derealizer-class-generator
+
+This project was built as a prettier alternative to derealizer's serialization format enums.
+
+Built with Vue.
+
 ## Project setup
 ```
 npm install
