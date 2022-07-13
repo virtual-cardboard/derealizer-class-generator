@@ -6,7 +6,7 @@
 			</div>
 		</div>
 		<div class="flex flex-col w-2/5">
-			<ClassCode :class-defs="classDefinitions" class="" />
+			<ClassCode :classDefs="classDefinitions" class="" />
 		</div>
 	</div>
 </template>
@@ -22,12 +22,12 @@ export default {
 					accessMod: { name: 'public', code: 'public' },
 					abstract: false,
 					name: '',
-					superclass: null,
+					superClass: '',
 					fields: [
 						{
 							accessMod: { name: 'private', code: 'private' },
 							transient: false,
-							type: null,
+							type: '',
 							name: ''
 						},
 					]

@@ -1,7 +1,7 @@
 <template>
-	<dropdown :modelValue="modelValue" @change="change($event)" :options="typeOptions" option-label="name"
-		:filter="true" />
-	<FieldType v-if="modelValue && modelValue.parameter" v-model="parameter" />
+	<dropdown v-model="mutableModelValue" :options="typeOptions" option-label="name" :filter="true" />
+	<FieldType v-if="this.mutableModelValue && 'parameter' in this.mutableModelValue" v-model="parameter"
+		ref="parameterField" />
 </template>
 
 
@@ -11,6 +11,7 @@ export default {
 	emits: ['update:modelValue'],
 	data() {
 		return {
+			mutableModelValue: null,
 			parameter: null,
 			typeOptions: [
 				{ name: 'long' },
@@ -22,15 +23,29 @@ export default {
 				{ name: 'float' },
 				{ name: 'String' },
 
-				{ name: 'repeated', parameter: true },
-				{ name: 'optional', parameter: true },
-				{ name: 'obj', parameter: true },
+				{ name: 'List', parameter: null },
+				{ name: 'optional', parameter: null },
+				{ name: 'obj', parameter: null },
 			]
 		}
 	},
 	methods: {
-		change(event) {
-			this.$emit('update:modelValue', event.value);
+	},
+	computed: {
+
+	},
+	created() {
+		this.mutableModelValue = this.modelValue;
+	},
+	watch: {
+		mutableModelValue(newMutableModelValue) {
+			if (this.$refs.parameterField) {
+				this.$refs.parameterField.mutableModelValue = null;
+			}
+			this.$emit('update:modelValue', newMutableModelValue);
+		},
+		parameter(newParameter) {
+			if (this.mutableModelValue) this.mutableModelValue.parameter = newParameter;
 		}
 	},
 }
