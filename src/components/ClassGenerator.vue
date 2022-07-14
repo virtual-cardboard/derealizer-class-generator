@@ -27,7 +27,7 @@ export default {
 						{
 							accessMod: { name: 'private', code: 'private' },
 							transient: false,
-							type: '',
+							type: null,
 							name: ''
 						},
 					]
