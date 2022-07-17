@@ -1,8 +1,8 @@
 <template>
 	<div class="bg-slate-200 shadow-lg border">
-		<TabView>
+		<TabView v-model:activeIndex="activeIndex">
 			<TabPanel v-for="(def, index) in classDefinitions" :key="index" :header="def.name + '.java'">
-				<div v-if="def === currentClass" class="bg-slate-300 p-2 m-1 rounded-lg font-mono">
+				<div class="bg-slate-300 p-2 m-1 rounded-lg font-mono">
 					<div v-html="doGenerateClassCode(def)" id="code"></div>
 				</div>
 				<div class="flex justify-end mt-4">
@@ -25,13 +25,14 @@ export default {
 	data() {
 		return {
 			classDefinitions: null,
-			currentClass: null,
+			activeIndex: 0
 		}
 	},
 	methods: {
 		doGenerateClassCode(classDefinition) {
 			try {
-				return "<pre>" + this.generateClassCode(classDefinition).replaceAll('	', '&#9;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('\n', '<br>') + "</pre>";
+				return "<pre class='whitespace-pre-wrap'>" +
+					this.generateClassCode(classDefinition).replaceAll('	', '&#9;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('\n', '<br>') + "</pre>";
 			} catch (error) {
 				console.log(error);
 				return 'Waiting for user input...';
@@ -113,7 +114,7 @@ export default {
 				return `List<${type.parameter ? this.convertPrimitiveToWrapper(type.parameter) : 'Object'}>`;
 			}
 			else if (type.name === 'optional') return this.convertPrimitiveToWrapper(type.parameter);
-			else if (type.name === 'obj') return type.parameter.name || 'Object';
+			else if (type.name === 'obj') return type.parameter.name;
 			else return type.name;
 		},
 		convertPrimitiveToWrapper(type) {
@@ -250,12 +251,16 @@ export default {
 			return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
 		},
 		copyToClipboard() {
-			navigator.clipboard.writeText(this.generateClassCode(this.currentClass));
+			navigator.clipboard.writeText(this.generateClassCode(this.classDefinitions[this.activeIndex]));
 		}
 	},
 	created() {
 		this.classDefinitions = this.classDefs;
-		this.currentClass = this.classDefinitions ? this.classDefinitions[0] : null;
+	},
+	watch: {
+		classDefs() {
+			this.classDefinitions = this.classDefs;
+		}
 	},
 	components: {
 		TabView, TabPanel
