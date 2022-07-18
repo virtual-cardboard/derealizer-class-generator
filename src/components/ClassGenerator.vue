@@ -1,8 +1,13 @@
 <template>
 	<div class="flex columns-2 p-4 w-full h-screen">
 		<div class="flex flex-col w-3/5 pr-8">
+			<div class="m-4">
+				<Button label="Export" icon="pi pi-download" @click="exportClasses" :disabled="!classDefinitions.length"
+					class="p-button-secondary" />
+				<a id="downloadAnchor" class="hidden" download="classes.json">This is the hidden download anchor.</a>
+			</div>
 			<div v-for="(def, index) in classDefinitions" :key="index" class="p-4">
-				<ClassDefinition :dataProp="def" @delete="() => deleteClass(def)"></ClassDefinition>
+				<ClassDefinition :dataProp="def" @delete="deleteClass(def)"></ClassDefinition>
 			</div>
 			<Button label="New Class" icon="pi pi-plus" @click="newClass" class="text-[#4caf50] m-4" />
 		</div>
@@ -15,6 +20,7 @@
 <script>
 import ClassDefinition from './ClassDefinition.vue';
 import ClassCode from './ClassCode.vue';
+
 export default {
 	data() {
 		return {
@@ -26,20 +32,19 @@ export default {
 			this.classDefinitions.push({
 				accessMod: { name: 'public', code: 'public' },
 				abstract: false,
-				name: '',
+				name: 'NewClass',
 				superClass: '',
-				fields: [
-					{
-						accessMod: { name: 'private', code: 'private' },
-						transient: false,
-						type: null,
-						name: ''
-					},
-				]
+				fields: []
 			});
 		},
 		deleteClass(def) {
 			this.classDefinitions = this.classDefinitions.filter(d => d !== def);
+		},
+		exportClasses() {
+			const downloadAnchor = document.getElementById("downloadAnchor");
+
+			downloadAnchor.setAttribute('href', URL.createObjectURL(new Blob([JSON.stringify(this.classDefinitions)])));
+			downloadAnchor.click();
 		}
 	},
 	components: {

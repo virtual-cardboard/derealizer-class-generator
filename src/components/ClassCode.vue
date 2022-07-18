@@ -3,9 +3,9 @@
 		<TabView v-model:activeIndex="activeIndex">
 			<TabPanel v-for="(def, index) in classDefinitions" :key="index" :header="def.name + '.java'">
 				<div class="bg-slate-300 p-2 m-1 rounded-lg font-mono">
-					<div v-html="doGenerateClassCode(def)" id="code"></div>
+					<div v-html="doGenerateClassCode(def) || 'Incomplete class definition'" id="code"></div>
 				</div>
-				<div class="flex justify-end mt-4">
+				<div v-if="doGenerateClassCode(def)" class="flex justify-end mt-4">
 					<Button label="Copy to Clipboard" icon="pi pi-copy" class="p-button-outlined p-button-warning"
 						@click="copyToClipboard()" />
 				</div>
@@ -35,7 +35,7 @@ export default {
 					this.generateClassCode(classDefinition).replaceAll('	', '&#9;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('\n', '<br>') + "</pre>";
 			} catch (error) {
 				console.log(error);
-				return 'Waiting for user input...';
+				return null;
 			}
 		},
 		generateClassCode(classDefinition) {

@@ -17,7 +17,7 @@
 				<label for="transientCheckbox">Transient </label>
 				<FieldType v-model="field.type" />
 				<input-text v-model="field.name" placeholder="Name" />
-				<Button icon="pi pi-times" class="p-button-plain p-button-rounded p-button-text" />
+				<Button icon="pi pi-times" @click="deleteField(index)" class="p-button-plain p-button-rounded p-button-text" />
 			</div>
 			<Button label="New Field" icon="pi pi-plus" @click="newField" class="text-[#4caf50] m-2" />
 		</div>
@@ -53,6 +53,9 @@ export default {
 				name: ''
 			})
 		},
+		deleteField(index) {
+			this.data.fields.splice(index, 1);
+		}
 	},
 	created() {
 		this.data = this.dataProp;
