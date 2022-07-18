@@ -3,8 +3,14 @@
 		<div class="flex flex-col w-3/5 pr-8">
 			<div class="m-4">
 				<Button label="Export" icon="pi pi-download" @click="exportClasses" :disabled="!classDefinitions.length"
-					class="p-button-secondary" />
+					class="p-button-secondary mr-4" />
+
 				<a id="downloadAnchor" class="hidden" download="classes.json">This is the hidden download anchor.</a>
+
+				<Button label="Import" icon="pi pi-upload" @click="() => this.$refs.uploadInput.click()"
+					class="p-button-secondary mr-4" />
+				<input ref="uploadInput" type="file" accept=".json" @change="e => parseClassesJsonFile(e)" class="hidden">
+
 			</div>
 			<div v-for="(def, index) in classDefinitions" :key="index" class="p-4">
 				<ClassDefinition :dataProp="def" @delete="deleteClass(def)"></ClassDefinition>
@@ -45,6 +51,23 @@ export default {
 
 			downloadAnchor.setAttribute('href', URL.createObjectURL(new Blob([JSON.stringify(this.classDefinitions)])));
 			downloadAnchor.click();
+		},
+		parseClassesJsonFile(e) {
+			if (!e.target.files.length) {
+				return;
+			}
+			const file = e.target.files[0];
+			const reader = new FileReader();
+			reader.readAsText(file, 'UTF-8');
+
+			reader.onLoad = readerEvent => {
+				var content = readerEvent.target.result;
+				try {
+					this.classDefinitions = JSON.parse(content);
+				} catch (error) {
+					alert(error.toString());
+				}
+			}
 		}
 	},
 	components: {

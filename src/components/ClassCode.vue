@@ -1,6 +1,6 @@
 <template>
 	<div class="bg-slate-200 shadow-lg border">
-		<TabView v-model:activeIndex="activeIndex">
+		<TabView v-model:activeIndex="activeIndex" scrollable>
 			<TabPanel v-for="(def, index) in classDefinitions" :key="index" :header="def.name + '.java'">
 				<div class="bg-slate-300 p-2 m-1 rounded-lg font-mono">
 					<div v-html="doGenerateClassCode(def) || 'Incomplete class definition'" id="code"></div>
