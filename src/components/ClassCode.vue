@@ -1,6 +1,16 @@
 <template>
 	<div class="bg-slate-200 shadow-lg border">
 		<TabView v-model:activeIndex="activeIndex" scrollable>
+			<TabPanel :header="enumName + '.java'">
+				<div class="bg-slate-300 p-2 m-1 rounded-lg font-mono">
+					<div v-html="EnumCodeGenerator.generateEnumCode(enumName, classDefinitions) || 'Incomplete class definition'"
+						id="code"></div>
+				</div>
+				<div v-if="EnumCodeGenerator.generateEnumCode(enumName, classDefinitions)" class="flex justify-end mt-4">
+					<Button label="Copy to Clipboard" icon="pi pi-copy" class="p-button-outlined p-button-warning"
+						@click="EnumCodeGenerator.copyToClipboard()" />
+				</div>
+			</TabPanel>
 			<TabPanel v-for="(def, index) in classDefinitions" :key="index" :header="def.name + '.java'">
 				<div class="bg-slate-300 p-2 m-1 rounded-lg font-mono">
 					<div v-html="ClassCodeGenerator.generateClassCode(def) || 'Incomplete class definition'" id="code"></div>
@@ -18,6 +28,7 @@
 import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
 import ClassCodeGenerator from '@/scripts/ClassCodeGenerator';
+import EnumCodeGenerator from '@/scripts/EnumCodeGenerator';
 
 export default {
 	props: {
@@ -28,7 +39,8 @@ export default {
 		return {
 			classDefinitions: null,
 			activeIndex: 0,
-			ClassCodeGenerator: ClassCodeGenerator
+			ClassCodeGenerator: ClassCodeGenerator,
+			EnumCodeGenerator: EnumCodeGenerator,
 		}
 	},
 	methods: {

@@ -21,6 +21,38 @@ class Util {
 				return this.convertTypeToString(type);
 		}
 	}
+
+	toCamelCase(s) {
+		const parts = s.split("_");
+		let camelCaseString = "";
+		for (const part of parts) {
+			camelCaseString += this.toProperCase(part);
+		}
+		return camelCaseString;
+	}
+	toSnakeCase(s) {
+		const re = /[A-Z]/g;
+		let match;
+		const wordStartIndices = [];
+		while ((match = re.exec(s)) != null) {
+			wordStartIndices.push(match.index);
+		}
+		let snakeCaseString = "";
+		for (let i = 0; i < wordStartIndices.length; i++) {
+			if (i !== wordStartIndices.length - 1) {
+				snakeCaseString += s.substring(wordStartIndices[i], wordStartIndices[i + 1]) + "_";
+			} else {
+				snakeCaseString += s.substring(wordStartIndices[i]);
+			}
+		}
+		return snakeCaseString.toUpperCase();
+	}
+	toProperCase(s) {
+		if (!s.trim()) {
+			return s;
+		}
+		return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
+	}
 }
 
 module.exports = new Util();

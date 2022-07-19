@@ -90,7 +90,7 @@ class ClassCodeGenerator {
 			// Set a field
 			switch (type.name) {
 				case 'long': case 'int': case 'short': case 'byte': case 'boolean': case 'double': case 'float': case 'String':
-					return `${indents}this.${name} = reader.read${this.toCamelCase(type.name)}();\n`;
+					return `${indents}this.${name} = reader.read${Util.toProperCase(type.name)}();\n`;
 				case 'List': {
 					const param = type.parameter;
 					const iterVariable = "i" + variablesCount;
@@ -109,8 +109,7 @@ class ClassCodeGenerator {
 				}
 				case 'obj': {
 					const param = type.parameter;
-					const objClassName = this.toCamelCase(param.name);
-					return `${indents}this.${name} = new ${objClassName}();\n` +
+					return `${indents}this.${name} = new ${Util.toProperCase(param.name)}();\n` +
 						`${indents}this.${name}.read(reader);\n`;
 				}
 				default:
@@ -121,7 +120,7 @@ class ClassCodeGenerator {
 			// Add something to a list
 			switch (type.name) {
 				case 'long': case 'int': case 'short': case 'byte': case 'boolean': case 'double': case 'float': case 'String':
-					return `${indents}${listName}.add(reader.read${this.toCamelCase(type.name)}());\n`;
+					return `${indents}${listName}.add(reader.read${Util.toProperCase(type.name)}());\n`;
 				case 'List': {
 					const param = type.parameter;
 					const iterVariable = "i" + variablesCount;
@@ -143,9 +142,8 @@ class ClassCodeGenerator {
 				}
 				case 'obj': {
 					const param = type.parameter;
-					const objClassName = this.toCamelCase(param.name);
 					const objVarName = "pojo" + variablesCount;
-					return `${indents}${objClassName} ${objVarName} = new ${objClassName}();\n` +
+					return `${indents}${param.name} ${objVarName} = new ${param.name}();\n` +
 						`${indents}${objVarName}.read(reader);\n` +
 						`${indents}${listName}.add(${objVarName});\n`;
 				}
@@ -154,6 +152,41 @@ class ClassCodeGenerator {
 			}
 		}
 	}
+
+	toWriteMethod(name, type, numIndents = 0, variablesCount = 0) {
+		let indents = "		";
+		for (let i = 0; i < numIndents; i++) {
+			indents += "	";
+		}
+
+		switch (type.name) {
+			case 'long': case 'int': case 'short': case 'byte': case 'boolean': case 'double': case 'float': case 'String':
+				return indents + "writer.consume(" + name + ");\n";
+			case 'List': {
+				const param = type.parameter;
+				const iterVariable = "i" + variablesCount;
+				return `${indents}writer.consume((byte) ${name}.size());\n` +
+					`${indents}for (int ${iterVariable} = 0; ${iterVariable} < ${name}.size(); ${iterVariable}++) {\n` +
+					this.toWriteMethod(name + ".get(" + iterVariable + ")", param, numIndents + 1, variablesCount + 1) +
+					`${indents}}\n`;
+			}
+			case 'optional': {
+				const param = type.parameter;
+				return `${indents}if (${name} == null) {\n` +
+					`${indents}	writer.consume(false);\n` +
+					`${indents}} else {\n` +
+					`${indents}	writer.consume(true);\n` +
+					this.toWriteMethod(name, param, numIndents + 1, variablesCount) +
+					`${indents}}\n`;
+			}
+			case 'obj':
+				return indents + name + ".write(writer);\n";
+			default:
+				throw new Error("Unhandled SerializationDataType: " + type.name + "\nCould not interpret data type as a field type.");
+		}
+	}
+
+
 }
 
 module.exports = new ClassCodeGenerator();
