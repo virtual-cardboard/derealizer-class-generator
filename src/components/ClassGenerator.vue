@@ -18,7 +18,7 @@
 			<Button label="New Class" icon="pi pi-plus" @click="newClass" class="text-[#4caf50] m-4" />
 		</div>
 		<div v-if="classDefinitions.length" class="flex flex-col w-2/5">
-			<ClassCode :classDefs="classDefinitions" />
+			<ClassCode :enumName="enumName" :classDefs="classDefinitions" />
 		</div>
 	</div>
 </template>
@@ -30,6 +30,7 @@ import ClassCode from './ClassCode.vue';
 export default {
 	data() {
 		return {
+			enumName: 'MySerializationFormats',
 			classDefinitions: []
 		};
 	},
