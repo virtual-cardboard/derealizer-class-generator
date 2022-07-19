@@ -1,69 +1,96 @@
 const Util = require('./Util');
 
 class EnumCodeGenerator {
-	generateEnumCode(enumName, classDefinitions) {
+	generateEnumCode(enumName, classDefinitions, settings) {
 		try {
-			return Util.convertStringToHTML(this.doGenerateEnumCode(enumName, classDefinitions));
+			const str = this.doGenerateEnumCode(enumName, classDefinitions, settings);
+			const indexOfImportantPart = str.indexOf("public enum");
+			return Util.convertStringToHTML(str.substring(0, 7) + "...\n\n" + str.substring(indexOfImportantPart));
 		} catch (error) {
 			console.log(error);
 			return null;
 		}
 	}
-	doGenerateEnumCode(enumName, classDefinitions) {
+
+	doGenerateEnumCode(enumName, classDefinitions, settings) {
 		if (!enumName) {
 			throw "No enum name";
 		}
 		const serializationDataTypePath = "derealizer.datatype.SerializationDataType";
-		const serializationFormatPath = "derealizer.format.SerializationFormat";
 		const serializationFormatEnumPath = "derealizer.format.SerializationFormatEnum";
 		const fieldNamesPath = "derealizer.format.FieldNames";
 		const serializablePath = "derealizer.format.Serializable";
-		let s = "import static " + serializationDataTypePath + ".BOOLEAN;\n" +
-			"import static " + serializationDataTypePath + ".BYTE;\n" +
-			"import static " + serializationDataTypePath + ".LONG;\n" +
-			"import static " + serializationDataTypePath + ".INT;\n" +
-			"import static " + serializationDataTypePath + ".SHORT;\n" +
-			"import static " + serializationDataTypePath + ".STRING_UTF8;\n" +
-			"import static " + serializationDataTypePath + ".optional;\n" +
-			"import static " + serializationDataTypePath + ".pojo;\n" +
-			"import static " + serializationDataTypePath + ".repeated;\n" +
-			"import static " + serializationFormatPath + ".types;\n" +
-			"\n" +
-			"import " + serializationFormatEnumPath + ";\n" +
-			"import " + serializationFormatPath + ";\n" +
-			"import " + fieldNamesPath + ";\n" +
-			"import " + serializablePath + ";\n" +
-			"\n" +
-			"public enum " + enumName + " implements SerializationFormatEnum {\n\n";
+
+		// Generate import statements
+		let s = `import static ${serializationDataTypePath}.BOOLEAN;
+import static ${serializationDataTypePath}.BYTE;
+import static ${serializationDataTypePath}.LONG;
+import static ${serializationDataTypePath}.INT;
+import static ${serializationDataTypePath}.SHORT;
+import static ${serializationDataTypePath}.STRING_UTF8;
+import static ${serializationDataTypePath}.optional;
+import static ${serializationDataTypePath}.pojo;
+import static ${serializationDataTypePath}.repeated;
+
+import ${serializationFormatEnumPath};
+import ${fieldNamesPath};
+import ${serializablePath};
+
+public enum ${enumName} implements SerializationFormatEnum {
+
+`;
+
+		// Generate enum values
 		for (const classDef of classDefinitions) {
-			s += "	" + Util.toSnakeCase(classDef.name) + "();";
+			if (settings.id) {
+				s += `	${Util.toSnakeCase(classDef.name)}(${classDef.id}, ${classDef.name}.class),\n`;
+			} else {
+				s += `	${Util.toSnakeCase(classDef.name)}(${classDef.name}.class),\n`;
+			}
 		}
-		// for (SerializationFormatEnum format : formatEnum.getEnumConstants()) {
-		// 	Enum <?> e = (Enum <?>) format;
-		// 	Queue < SerializationDataType > dataTypes = format.format().dataTypes();
-		// 	s += "	@" + FieldNames.class.getSimpleName() + "({ " + commaify(quotify(getFieldNames(format))) + " })\n";
-		// 	s += "	" + e.name() + "(types(" + commaify(dataTypes) + "), " + toCamelCase(e.name()) + ".class),\n";
-		// }
-		// s += "	;\n" +
-		// 	"\n" +
-		// 	"	private final " + SerializationFormat.class.getSimpleName() + " format;\n" +
-		// 	"	private final Class<? extends " + pojoBaseClass.getSimpleName() + "> pojoClass;\n" +
-		// 	"\n" +
-		// 	"	private " + formatEnum.getSimpleName() + "(" + SerializationFormat.class.getSimpleName() + " format, Class<? extends " + pojoBaseClass.getSimpleName() + "> pojoClass) {\n" +
-		// 	"		this.format = format;\n" +
-		// 	"		this.pojoClass = pojoClass;\n" +
-		// 	"	}\n" +
-		// 	"\n" +
-		// 	"	@Override\n" +
-		// 	"	public " + SerializationFormat.class.getSimpleName() + " format() {\n" +
-		// 	"		return format;\n" +
-		// 	"	}\n" +
-		// 	"\n" +
-		// 	"	@Override\n" +
-		// 	"	public Class<? extends " + pojoBaseClass.getSimpleName() + "> pojoClass() {\n" +
-		// 	"		return pojoClass;\n" +
-		// 	"	}\n\n" +
-		// 	"}\n";
+
+		// Generate fields
+		s += "	;\n\n" +
+				"	private final Class<? extends Serializable> serializableClass;\n";
+		if (settings.id) {
+			s += "	private final short id;\n";
+		}
+
+		// Generate constructor
+		if (settings.id) {
+			s += `
+	${enumName}(short id, Class<? extends Serializable> serializableClass) {
+		this.id = id;
+		this.serializableClass = serializableClass;
+	}
+`;
+		} else {
+			s += `
+	${enumName}(Class<? extends Serializable> serializableClass) {
+		this.serializableClass = serializableClass;
+	}
+`;
+		}
+
+		// Generate id getter if needed
+		if (settings.id) {
+			s += `
+	@Override
+	public short getId() {
+		return id;
+	}
+`;
+		}
+
+		// Generate serializable class getter
+		s += `
+	@Override
+	public Class<? extends Serializable> getSerializableClass() {
+		return serializableClass;
+	}
+	
+}
+`;
 		return s;
 	}
 }

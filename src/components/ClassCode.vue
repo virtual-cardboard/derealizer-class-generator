@@ -3,21 +3,24 @@
 		<TabView v-model:activeIndex="activeIndex" scrollable>
 			<TabPanel :header="enumName + '.java'">
 				<div class="bg-slate-300 p-2 m-1 rounded-lg font-mono">
-					<div v-html="EnumCodeGenerator.generateEnumCode(enumName, classDefinitions) || 'Incomplete class definition'"
-						id="code"></div>
+					<div
+						id="code"
+						v-html="EnumCodeGenerator.generateEnumCode(enumName, classDefinitions, settings) || 'Incomplete class definition'"></div>
 				</div>
-				<div v-if="EnumCodeGenerator.generateEnumCode(enumName, classDefinitions)" class="flex justify-end mt-4">
-					<Button label="Copy to Clipboard" icon="pi pi-copy" class="p-button-outlined p-button-warning"
-						@click="EnumCodeGenerator.copyToClipboard()" />
+				<div v-if="EnumCodeGenerator.generateEnumCode(enumName, classDefinitions, settings)"
+						 class="flex justify-end mt-4">
+					<Button class="p-button-outlined p-button-warning" icon="pi pi-copy" label="Copy to Clipboard"
+									@click="Util.copyToClipboard(EnumCodeGenerator.doGenerateEnumCode(enumName, classDefinitions, settings))"/>
 				</div>
 			</TabPanel>
 			<TabPanel v-for="(def, index) in classDefinitions" :key="index" :header="def.name + '.java'">
 				<div class="bg-slate-300 p-2 m-1 rounded-lg font-mono">
-					<div v-html="ClassCodeGenerator.generateClassCode(def) || 'Incomplete class definition'" id="code"></div>
+					<div id="code"
+							 v-html="ClassCodeGenerator.generateClassCode(enumName, def) || 'Incomplete class definition'"></div>
 				</div>
-				<div v-if="ClassCodeGenerator.generateClassCode(def)" class="flex justify-end mt-4">
-					<Button label="Copy to Clipboard" icon="pi pi-copy" class="p-button-outlined p-button-warning"
-						@click="ClassCodeGenerator.copyToClipboard()" />
+				<div v-if="ClassCodeGenerator.generateClassCode(enumName, def)" class="flex justify-end mt-4">
+					<Button class="p-button-outlined p-button-warning" icon="pi pi-copy" label="Copy to Clipboard"
+									@click="Util.copyToClipboard(ClassCodeGenerator.doGenerateClassCode(enumName, def))"/>
 				</div>
 			</TabPanel>
 		</TabView>
@@ -29,11 +32,13 @@ import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
 import ClassCodeGenerator from '@/scripts/ClassCodeGenerator';
 import EnumCodeGenerator from '@/scripts/EnumCodeGenerator';
+import Util from '@/scripts/Util';
 
 export default {
 	props: {
-		enumName: { type: String, required: true },
-		classDefs: { type: Array, required: true }
+		enumName: {type: String, required: true},
+		classDefs: {type: Array, required: true},
+		settings: {type: Object, required: true},
 	},
 	data() {
 		return {
@@ -41,10 +46,10 @@ export default {
 			activeIndex: 0,
 			ClassCodeGenerator: ClassCodeGenerator,
 			EnumCodeGenerator: EnumCodeGenerator,
+			Util: Util,
 		}
 	},
-	methods: {
-	},
+	methods: {},
 	created() {
 		this.classDefinitions = this.classDefs;
 	},

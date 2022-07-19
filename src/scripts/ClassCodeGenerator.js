@@ -1,19 +1,18 @@
 const Util = require('./Util');
 
 class ClassCodeGenerator {
-	generateClassCode(classDefinition) {
+	generateClassCode(enumName, classDefinition) {
 		try {
-			return Util.convertStringToHTML(this.doGenerateClassCode(classDefinition));
+			return Util.convertStringToHTML(this.doGenerateClassCode(enumName, classDefinition));
 		} catch (error) {
 			console.log(error);
 			return null;
 		}
 	}
-	doGenerateClassCode(classDefinition) {
+
+	doGenerateClassCode(enumName, classDefinition) {
 		if (!classDefinition) return "";
 		let s = "";
-		// s += formatEnum.getClass().getPackage() + ".pojo;\n\n";
-		// s += "import static " + formatEnum.getClass().getName() + "." + e.name() + ";\n\n";
 		s += "import derealizer.format.Serializable;\n";
 		s += "import java.util.List;\n\n";
 		if (!classDefinition.superClass) {
@@ -42,10 +41,10 @@ class ClassCodeGenerator {
 		s += "		read(new SerializationReader(bytes));\n";
 		s += "	}\n\n";
 		// TODO: Format enum getter
-		// s += "	@Override\n";
-		// s += "	public " + formatEnum.getClass().getSimpleName() + " formatEnum() {\n";
-		// s += "		return " + e.name() + ";\n";
-		// s += "	}\n\n";
+		s += "	@Override\n";
+		s += "	public SerializationFormatEnum formatEnum() {\n";
+		s += `		return ${enumName};\n`;
+		s += "	}\n\n";
 		// Read
 		s += "	@Override\n";
 		s += "	public void read(SerializationReader reader) {\n";
@@ -89,28 +88,35 @@ class ClassCodeGenerator {
 		if (listName == null) {
 			// Set a field
 			switch (type.name) {
-				case 'long': case 'int': case 'short': case 'byte': case 'boolean': case 'double': case 'float': case 'String':
+				case 'long':
+				case 'int':
+				case 'short':
+				case 'byte':
+				case 'boolean':
+				case 'double':
+				case 'float':
+				case 'String':
 					return `${indents}this.${name} = reader.read${Util.toProperCase(type.name)}();\n`;
 				case 'List': {
 					const param = type.parameter;
 					const iterVariable = "i" + variablesCount;
 					const numVariable = "size" + variablesCount;
 					let s = `${indents}this.${name} = new ArrayList<>();\n` +
-						`${indents}for (byte ${iterVariable} = 0, ${numVariable} = reader.readByte(); ${iterVariable} < ${numVariable}; ${iterVariable}++) {\n` +
-						this.toReadMethod(null, param, numIndents + 1, variablesCount + 1, name) +
-						indents + "}\n";
+							`${indents}for (byte ${iterVariable} = 0, ${numVariable} = reader.readByte(); ${iterVariable} < ${numVariable}; ${iterVariable}++) {\n` +
+							this.toReadMethod(null, param, numIndents + 1, variablesCount + 1, name) +
+							indents + "}\n";
 					return s;
 				}
 				case 'optional': {
 					const param = type.parameter;
 					return indents + "if (reader.readBoolean()) {\n" +
-						this.toReadMethod(name, param, numIndents + 1, variablesCount, listName) +
-						indents + "}\n";
+							this.toReadMethod(name, param, numIndents + 1, variablesCount, listName) +
+							indents + "}\n";
 				}
 				case 'obj': {
 					const param = type.parameter;
 					return `${indents}this.${name} = new ${Util.toProperCase(param.name)}();\n` +
-						`${indents}this.${name}.read(reader);\n`;
+							`${indents}this.${name}.read(reader);\n`;
 				}
 				default:
 					console.log(type);
@@ -119,7 +125,14 @@ class ClassCodeGenerator {
 		} else {
 			// Add something to a list
 			switch (type.name) {
-				case 'long': case 'int': case 'short': case 'byte': case 'boolean': case 'double': case 'float': case 'String':
+				case 'long':
+				case 'int':
+				case 'short':
+				case 'byte':
+				case 'boolean':
+				case 'double':
+				case 'float':
+				case 'String':
 					return `${indents}${listName}.add(reader.read${Util.toProperCase(type.name)}());\n`;
 				case 'List': {
 					const param = type.parameter;
@@ -127,25 +140,25 @@ class ClassCodeGenerator {
 					const numVariable = "size" + variablesCount;
 					const newListName = "list" + variablesCount;
 					return `${indents}List<${Util.convertPrimitiveToWrapper(param)}> ${newListName} = new ArrayList<>();\n` +
-						`${indents}for (byte ${iterVariable} = 0, ${numVariable} = reader.readByte(); ${iterVariable} < ${numVariable}; ${iterVariable}++) {\n` +
-						this.toReadMethod(null, param, numIndents + 1, variablesCount + 1, name) +
-						`${indents}}\n` +
-						`${indents}${name}.add(${newListName});\n`;
+							`${indents}for (byte ${iterVariable} = 0, ${numVariable} = reader.readByte(); ${iterVariable} < ${numVariable}; ${iterVariable}++) {\n` +
+							this.toReadMethod(null, param, numIndents + 1, variablesCount + 1, name) +
+							`${indents}}\n` +
+							`${indents}${name}.add(${newListName});\n`;
 				}
 				case 'optional': {
 					const param = type.parameter;
 					return `${indents}if (reader.readBoolean()) {\n` +
-						`${this.toReadMethod(name, param, numIndents + 1, variablesCount, listName)}` +
-						`${indents}} else {\n` +
-						`${indents}	${listName}.add(null);\n` +
-						`${indents}}\n`;
+							`${this.toReadMethod(name, param, numIndents + 1, variablesCount, listName)}` +
+							`${indents}} else {\n` +
+							`${indents}	${listName}.add(null);\n` +
+							`${indents}}\n`;
 				}
 				case 'obj': {
 					const param = type.parameter;
 					const objVarName = "pojo" + variablesCount;
 					return `${indents}${param.name} ${objVarName} = new ${param.name}();\n` +
-						`${indents}${objVarName}.read(reader);\n` +
-						`${indents}${listName}.add(${objVarName});\n`;
+							`${indents}${objVarName}.read(reader);\n` +
+							`${indents}${listName}.add(${objVarName});\n`;
 				}
 				default:
 					throw new Error("Unhandled serialization field type: " + type + "\nCould not add type to list " + listName);
@@ -160,24 +173,31 @@ class ClassCodeGenerator {
 		}
 
 		switch (type.name) {
-			case 'long': case 'int': case 'short': case 'byte': case 'boolean': case 'double': case 'float': case 'String':
+			case 'long':
+			case 'int':
+			case 'short':
+			case 'byte':
+			case 'boolean':
+			case 'double':
+			case 'float':
+			case 'String':
 				return indents + "writer.consume(" + name + ");\n";
 			case 'List': {
 				const param = type.parameter;
 				const iterVariable = "i" + variablesCount;
 				return `${indents}writer.consume((byte) ${name}.size());\n` +
-					`${indents}for (int ${iterVariable} = 0; ${iterVariable} < ${name}.size(); ${iterVariable}++) {\n` +
-					this.toWriteMethod(name + ".get(" + iterVariable + ")", param, numIndents + 1, variablesCount + 1) +
-					`${indents}}\n`;
+						`${indents}for (int ${iterVariable} = 0; ${iterVariable} < ${name}.size(); ${iterVariable}++) {\n` +
+						this.toWriteMethod(name + ".get(" + iterVariable + ")", param, numIndents + 1, variablesCount + 1) +
+						`${indents}}\n`;
 			}
 			case 'optional': {
 				const param = type.parameter;
 				return `${indents}if (${name} == null) {\n` +
-					`${indents}	writer.consume(false);\n` +
-					`${indents}} else {\n` +
-					`${indents}	writer.consume(true);\n` +
-					this.toWriteMethod(name, param, numIndents + 1, variablesCount) +
-					`${indents}}\n`;
+						`${indents}	writer.consume(false);\n` +
+						`${indents}} else {\n` +
+						`${indents}	writer.consume(true);\n` +
+						this.toWriteMethod(name, param, numIndents + 1, variablesCount) +
+						`${indents}}\n`;
 			}
 			case 'obj':
 				return indents + name + ".write(writer);\n";

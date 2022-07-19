@@ -22,6 +22,10 @@ class Util {
 		}
 	}
 
+	copyToClipboard(text) {
+		navigator.clipboard.writeText(text);
+	}
+
 	toCamelCase(s) {
 		const parts = s.split("_");
 		let camelCaseString = "";
