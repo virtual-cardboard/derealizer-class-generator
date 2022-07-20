@@ -16,12 +16,12 @@ class ClassCodeGenerator {
 		s += "import derealizer.format.Serializable;\n";
 		s += "import java.util.List;\n\n";
 		if (!classDefinition.superClass) {
-			s += `public class ${classDefinition.name} implements Serializable {\n`;
+			s += `public ${classDefinition.abstract ? "abstract " : ""}class ${classDefinition.name} implements Serializable {\n`;
 		} // TODO: extend superclasses...
 		s += "\n";
 		let fields = classDefinition.fields;
 		for (const field of fields) {
-			s += `	${field.accessMod.code} ${Util.convertTypeToString(field.type)} ${field.name};\n`;
+			s += `	${field.accessMod.code} ${field.transient ? "transient " : ""}${Util.convertTypeToString(field.type)} ${field.name};\n`;
 		}
 		s += "\n";
 		// No-arg constructor
@@ -53,8 +53,7 @@ class ClassCodeGenerator {
 		//     s += "		super.read(reader);\n";
 		// }
 		for (const field of fields) {
-			// TODO: Make a toReadMethod() function
-			s += this.toReadMethod(field.name, field.type);
+			if (!field.transient) s += this.toReadMethod(field.name, field.type);
 		}
 		s += "	}\n\n";
 		// Write
@@ -65,8 +64,7 @@ class ClassCodeGenerator {
 		//     s += "		super.write(writer);\n";
 		// }
 		for (const field of fields) {
-			// TODO: Make a toWriteMethod() function
-			s += this.toWriteMethod(field.name, field.type);
+			if (!field.transient) s += this.toWriteMethod(field.name, field.type);
 		}
 		s += "	}\n\n";
 		// Getters
