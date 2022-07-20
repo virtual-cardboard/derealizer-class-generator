@@ -35,11 +35,14 @@ class ClassCodeGenerator {
 			}
 			s += "	}\n";
 		}
-		// byte[] Constructor
 		s += "\n";
-		s += `	public ${classDefinition.name}(byte[] bytes) {\n`;
-		s += "		read(new SerializationReader(bytes));\n";
-		s += "	}\n\n";
+		// byte[] Constructor
+		if (!classDefinition.abstract) {
+			s += `	public ${classDefinition.name}(byte[] bytes) {
+		read(new SerializationReader(bytes));
+	}\n`;
+		}
+		s += "\n";
 		// TODO: Format enum getter
 		s += "	@Override\n";
 		s += "	public SerializationFormatEnum formatEnum() {\n";

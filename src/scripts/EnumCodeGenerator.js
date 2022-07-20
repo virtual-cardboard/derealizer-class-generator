@@ -76,7 +76,7 @@ public enum ${enumName} implements SerializationFormatEnum {
 		if (settings.id) {
 			s += `
 	@Override
-	public short getId() {
+	public short id() {
 		return id;
 	}
 `;
@@ -85,7 +85,7 @@ public enum ${enumName} implements SerializationFormatEnum {
 		// Generate serializable class getter
 		s += `
 	@Override
-	public Class<? extends Serializable> getSerializableClass() {
+	public Class<? extends Serializable> serializableClass() {
 		return serializableClass;
 	}
 	
