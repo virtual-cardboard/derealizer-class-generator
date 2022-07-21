@@ -13,8 +13,9 @@
 				<input ref="uploadInput" accept=".json" class="hidden" type="file" @change="e => parseClassesJsonFile(e)">
 
 			</div>
-			<div v-for="(def, index) in classDefinitions" :key="def + index" class="p-4">
-				<ClassDefinition :dataProp="def" @delete="deleteClass(index)"></ClassDefinition>
+			<div v-for="(def, index) in classDefinitions" :key="def.accessMod.name + def.abstract + index" class="p-4">
+				<ClassDefinition :allAbstractClasses="allAbstractClasses" :classDef="def"
+												 @delete="() => duplicateClassName && deleteClass(index)"></ClassDefinition>
 			</div>
 			<Button class="text-[#4caf50] m-4" icon="pi pi-plus" label="New Class" @click="newClass"/>
 		</div>
@@ -42,12 +43,11 @@ export default {
 				accessMod: {name: 'public', code: 'public'},
 				abstract: false,
 				name: 'NewClass',
-				superClass: '',
+				superClass: null,
 				fields: []
 			});
 		},
 		deleteClass(index) {
-			console.log("deleteClass", index);
 			this.classDefinitions.splice(index, 1);
 		},
 		exportClasses() {
@@ -72,6 +72,22 @@ export default {
 					alert(error.toString());
 				}
 			}
+		}
+	},
+	computed: {
+		allAbstractClasses() {
+			return this.classDefinitions.filter(def => def.abstract);
+		},
+		duplicateClassName() {
+			const names = this.classDefinitions.map(def => def.name);
+			const seen = {};
+			for (const name of names) {
+				if (seen[name]) {
+					return name;
+				}
+				seen[name] = 1;
+			}
+			return null;
 		}
 	},
 	components: {

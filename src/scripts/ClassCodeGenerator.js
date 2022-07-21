@@ -15,9 +15,12 @@ class ClassCodeGenerator {
 		let s = "";
 		s += "import derealizer.format.Serializable;\n";
 		s += "import java.util.List;\n\n";
+		const accessMod = classDefinition.accessMod.code;
 		if (!classDefinition.superClass) {
-			s += `public ${classDefinition.abstract ? "abstract " : ""}class ${classDefinition.name} implements Serializable {\n`;
-		} // TODO: extend superclasses...
+			s += `${accessMod ? accessMod + ' ' : ''}${classDefinition.abstract ? "abstract " : ""}class ${classDefinition.name} implements Serializable {\n`;
+		} else {
+			s += `${accessMod ? accessMod + ' ' : ''}${classDefinition.abstract ? "abstract " : ""}class ${classDefinition.name} extends ${classDefinition.superClass.name} implements Serializable {\n`;
+		}
 		s += "\n";
 		let fields = classDefinition.fields;
 		for (const field of fields) {
