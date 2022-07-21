@@ -17,7 +17,6 @@ class ClassCodeGenerator {
 		let s = `import static java.lang.reflect.Modifier.isAbstract;
 
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ${abstractClassDefinition.name}Serializer {
@@ -25,7 +24,7 @@ public class ${abstractClassDefinition.name}Serializer {
 	@SuppressWarnings("unchecked")
 	private static final Constructor<? extends ${abstractClassDefinition.name}>[] ${snakeCaseClassName}_CONSTRUCTORS = new Constructor[Short.MAX_VALUE];
 
-	private static final List<Class<? extends ${Constants.classes.SerializableFormatEnum}>> SERIALIZATION_FORMAT_ENUMS = new ArrayList<>();
+	private static final List<Class<? extends ${Constants.classes.SerializationFormatEnum}>> SERIALIZATION_FORMAT_ENUMS = new ArrayList<>();
 	
 	static {
 		SERIALIZATION_FORMAT_ENUMS.add(${enumName}.class);
@@ -36,7 +35,7 @@ public class ${abstractClassDefinition.name}Serializer {
 				Class<? extends ${abstractClassDefinition.name}> clazz = (Class<? extends ${abstractClassDefinition.name}>) enumVal.serializableClass();
 				if (clazz == null) {
 					throw new RuntimeException("No POJO class defined for " + enumVal + ". " +
-							"Try using " + SerializationClassGenerator.class.getSimpleName() + " to generate a POJO class for you.");
+							"Try using " + SerializationClassGenerator.class.getSimpleName() + " or the derealizer class generator to generate a POJO class for you.");
 				}
 				if (isAbstract(clazz.getModifiers())) {
 					continue;
@@ -45,7 +44,7 @@ public class ${abstractClassDefinition.name}Serializer {
 				try {
 					short id = ((HasId) enumVal).id();
 					if (id == -1) {
-						throw new RuntimeException("No id set for ${Util.toCamelCase(enumName)}." + enumVal + ".");
+						throw new RuntimeException("No id set for " + ${enumName}.class.getSimpleName() + "." + enumVal + ".");
 					}
 					${snakeCaseClassName}_CONSTRUCTORS[id] = clazz.getConstructor();
 				} catch (NoSuchMethodException e) {
@@ -61,7 +60,6 @@ public class ${abstractClassDefinition.name}Serializer {
 	public static ${abstractClassDefinition.name} deserialize(SerializationReader reader) {
 		if (reader.bytesRemaining() < 2) {
 			throw new IllegalArgumentException("Invalid number of bytes in packet: " + reader.bytesRemaining());
-			return null;
 		}
 		int id = reader.readShort();
 		if (id < 0 || id >= ${snakeCaseClassName}_CONSTRUCTORS.length) {

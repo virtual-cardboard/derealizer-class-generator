@@ -40,6 +40,7 @@ export default {
 	methods: {
 		newClass() {
 			this.classDefinitions.push({
+				id: -1,
 				accessMod: {name: 'public', code: 'public'},
 				abstract: false,
 				name: 'NewClass',

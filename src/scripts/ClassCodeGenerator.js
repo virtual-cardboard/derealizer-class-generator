@@ -46,18 +46,18 @@ class ClassCodeGenerator {
 	}\n`;
 		}
 		s += "\n";
-		// TODO: Format enum getter
+		// Format enum getter
 		s += "	@Override\n";
 		s += "	public SerializationFormatEnum formatEnum() {\n";
-		s += `		return ${enumName};\n`;
+		s += `		return ${enumName}.${Util.toSnakeCase(classDefinition.name)};\n`;
 		s += "	}\n\n";
 		// Read
 		s += "	@Override\n";
 		s += "	public void read(SerializationReader reader) {\n";
-		// TODO: Call super.read if needed
-		// if (isImplemented(pojoBaseClass, "read", SerializationReader.class)) {
-		//     s += "		super.read(reader);\n";
-		// }
+		// Call super.read if needed
+		if (classDefinition.superClass) {
+			s += "		super.read(reader);\n";
+		}
 		for (const field of fields) {
 			if (!field.transient) s += this.toReadMethod(field.name, field.type);
 		}
@@ -65,10 +65,10 @@ class ClassCodeGenerator {
 		// Write
 		s += "	@Override\n";
 		s += "	public void write(SerializationWriter writer) {\n";
-		// TODO: Call super.write if needed
-		// if (isImplemented(pojoBaseClass, "write", SerializationWriter.class)) {
-		//     s += "		super.write(writer);\n";
-		// }
+		// Call super.write if needed
+		if (classDefinition.superClass) {
+			s += "		super.write(writer);\n";
+		}
 		for (const field of fields) {
 			if (!field.transient) s += this.toWriteMethod(field.name, field.type);
 		}
