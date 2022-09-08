@@ -33,6 +33,7 @@ export default {
 	data() {
 		return {
 			enumName: 'MySerializationFormats',
+			builtInClassDefinitions: [],
 			classDefinitions: [],
 			settings: {},
 		};
