@@ -2,7 +2,7 @@
   <div v-if="classDefinitions.length" class="decorate">
     <TabView v-model:activeIndex="activeIndex" scrollable>
       <TabPanel :header="enumName + '.java'">
-        <div class="overflow-auto md:max-h-80 lg:max-h-[500px]">
+        <div class="overflow-auto max-h-full">
           <highlightjs :code="EnumCodeGenerator.generateEnumCode(enumName, classDefinitions, settings) ||
 						'Incomplete class definitions'" language="java"/>
         </div>
@@ -94,10 +94,8 @@ export default {
 
 .gradient-1 {
   background-color: hsla(0, 0%, 100%, 1);
-  background-image: radial-gradient(at 0% 100%, hsla(333, 100%, 90%, 1) 0px, transparent 50%),
-  radial-gradient(at 83% 0%, hsla(196, 65%, 62%, 1) 0px, transparent 50%),
-  radial-gradient(at 69% 100%, hsla(222, 100%, 71%, 1) 0px, transparent 50%),
-  radial-gradient(at 23% 0%, hsla(160, 100%, 68%, 1) 0px, transparent 50%);
+  background-image: radial-gradient(at 69% 100%, hsla(222, 100%, 71%, 1) 0px, transparent 90%),
+  radial-gradient(at 23% 0%, hsla(160, 100%, 68%, 1) 0px, transparent 90%);
 }
 
 .decorate {
