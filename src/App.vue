@@ -3,16 +3,19 @@
     <NavBar></NavBar>
     <div class="flex flex-col w-full">
       <router-view></router-view>
+      <Toast/>
     </div>
   </div>
 </template>
 
 <script>
 import NavBar from "@/components/navbar/NavBar.vue";
+import Toast from 'primevue/toast';
 
 export default {
   components: {
     NavBar,
+    Toast,
   },
 }
 

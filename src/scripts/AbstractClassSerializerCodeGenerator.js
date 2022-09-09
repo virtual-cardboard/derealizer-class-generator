@@ -2,19 +2,19 @@ const Util = require('./Util');
 const Constants = require('./Constants');
 
 class ClassCodeGenerator {
-	generateAbstractClassSerializerCode(enumName, abstractClassDefinition) {
-		try {
-			return Util.convertStringToHTML(this.doGenerateAbstractClassSerializerCode(enumName, abstractClassDefinition));
-		} catch (error) {
-			console.log(error);
-			return null;
-		}
-	}
+    generateAbstractClassSerializerCode(enumName, abstractClassDefinition) {
+        try {
+            return Util.convertStringToHTML(this.doGenerateAbstractClassSerializerCode(enumName, abstractClassDefinition));
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+    }
 
-	doGenerateAbstractClassSerializerCode(enumName, abstractClassDefinition) {
-		if (!abstractClassDefinition) return "";
-		const snakeCaseClassName = Util.toSnakeCase(abstractClassDefinition.name);
-		let s = `import static java.lang.reflect.Modifier.isAbstract;
+    doGenerateAbstractClassSerializerCode(enumName, abstractClassDefinition) {
+        if (!abstractClassDefinition) return "";
+        const snakeCaseClassName = Util.toSnakeCase(abstractClassDefinition.name);
+        let s = `import static java.lang.reflect.Modifier.isAbstract;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
@@ -35,7 +35,8 @@ public class ${abstractClassDefinition.name}Serializer {
 				Class<? extends ${abstractClassDefinition.name}> clazz = (Class<? extends ${abstractClassDefinition.name}>) enumVal.serializableClass();
 				if (clazz == null) {
 					throw new RuntimeException("No POJO class defined for " + enumVal + ". " +
-							"Try using " + SerializationClassGenerator.class.getSimpleName() + " or the derealizer class generator to generate a POJO class for you.");
+							"Try using " + SerializationClassGenerator.class.getSimpleName() +
+							" or the derealizer class generator to generate a POJO class for you.");
 				}
 				if (isAbstract(clazz.getModifiers())) {
 					continue;
@@ -88,8 +89,8 @@ public class ${abstractClassDefinition.name}Serializer {
 	
 }`;
 
-		return s;
-	}
+        return s;
+    }
 
 }
 

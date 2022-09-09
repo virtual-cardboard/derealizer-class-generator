@@ -2,24 +2,24 @@
   <div v-if="classDefinitions.length" class="decorate">
     <TabView v-model:activeIndex="activeIndex" scrollable>
       <TabPanel :header="enumName + '.java'">
-        <div class="overflow-auto max-h-full">
+        <div class="overflow-auto max-h-96">
           <highlightjs :code="EnumCodeGenerator.generateEnumCode(enumName, classDefinitions, settings) ||
 						'Incomplete class definitions'" language="java"/>
         </div>
         <div v-if="EnumCodeGenerator.generateEnumCode(enumName, classDefinitions, settings)"
              class="flex justify-end mt-4">
           <Button class="p-button-outlined p-button-warning" icon="pi pi-copy" label="Copy to Clipboard"
-                  @click="Util.copyToClipboard(EnumCodeGenerator.doGenerateEnumCode(enumName, classDefinitions, settings))"/>
+                  @click="Util.copyToClipboard(EnumCodeGenerator.doGenerateEnumCode(enumName, classDefinitions, settings), $toast)"/>
         </div>
       </TabPanel>
       <TabPanel v-for="(def, index) in classDefinitions" :key="index" :header="def.name + '.java'">
-        <div class="overflow-auto max-h-full">
+        <div class="overflow-auto max-h-96">
           <highlightjs :code="ClassCodeGenerator.generateClassCode(enumName, def) || 'Incomplete class definition'"
                        language="java"/>
         </div>
         <div v-if="ClassCodeGenerator.generateClassCode(enumName, def)" class="flex justify-end mt-4">
           <Button class="p-button-outlined p-button-warning" icon="pi pi-copy" label="Copy to Clipboard"
-                  @click="Util.copyToClipboard(ClassCodeGenerator.doGenerateClassCode(enumName, def))"/>
+                  @click="Util.copyToClipboard(ClassCodeGenerator.doGenerateClassCode(enumName, def), $toast)"/>
         </div>
       </TabPanel>
     </TabView>
@@ -33,14 +33,15 @@
   <div v-if="abstractClasses.length" class="decorate my-4">
     <TabView scrollable>
       <TabPanel v-for="(def, index) in abstractClasses" :key="index" :header="def.name + 'Serializer.java'">
-        <div class="code-container">
-          <div
-              v-html="AbstractClassSerializerCodeGenerator.generateAbstractClassSerializerCode(enumName, def) || 'Incomplete class definition'"></div>
+        <div class="overflow-auto max-h-96 max-w-2xl">
+          <highlightjs
+              :code="AbstractClassSerializerCodeGenerator.generateAbstractClassSerializerCode(enumName, def) || 'Incomplete class definition'"
+              language="java"/>
         </div>
         <div v-if="AbstractClassSerializerCodeGenerator.generateAbstractClassSerializerCode(enumName, def)"
              class="flex justify-end mt-4">
           <Button class="p-button-outlined p-button-warning" icon="pi pi-copy" label="Copy to Clipboard"
-                  @click="Util.copyToClipboard(AbstractClassSerializerCodeGenerator.doGenerateAbstractClassSerializerCode(enumName, def))"/>
+                  @click="Util.copyToClipboard(AbstractClassSerializerCodeGenerator.doGenerateAbstractClassSerializerCode(enumName, def), $toast)"/>
         </div>
       </TabPanel>
     </TabView>

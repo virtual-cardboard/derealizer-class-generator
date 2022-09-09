@@ -30,8 +30,9 @@ class Util {
         }
     }
 
-    copyToClipboard(text) {
+    copyToClipboard(text, toast) {
         navigator.clipboard.writeText(text);
+        toast.add({ severity: "success", summary: "Copied to clipboard!", life: 3000 });
     }
 
     toCamelCase(s) {

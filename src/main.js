@@ -6,6 +6,7 @@ import hljs from 'highlight.js/lib/core';
 import java from 'highlight.js/lib/languages/java';
 import hljsVuePlugin from "@highlightjs/vue-plugin";
 import PrimeVue from 'primevue/config';
+import ToastService from 'primevue/toastservice';
 
 import Checkbox from 'primevue/checkbox';
 import InputText from 'primevue/inputtext';
@@ -34,7 +35,7 @@ library.add(faHome, faGears, faBars)
 
 createApp(App)
     .use(router)
-    .use(PrimeVue)
+    .use(PrimeVue).use(ToastService)
     .use(hljsVuePlugin)
     .component('dropdown', Dropdown).component('input-text', InputText).component('checkbox', Checkbox).component('Button', Button)
     .component('font-awesome-icon', FontAwesomeIcon)

@@ -1,6 +1,6 @@
 <template>
-  <div class="flex p-2 w-full overflow-auto">
-    <div class="flex-1 w-3/5 pr-8">
+  <div class="flex p-2 w-full overflow-x-clip">
+    <div class="flex-1 w-3/5 max-w-[60%] pr-8">
       <div class="m-4">
         <Button :disabled="!classDefinitions.length" class="p-button-secondary mr-4" icon="pi pi-upload"
                 label="Export"
@@ -14,12 +14,12 @@
 
       </div>
       <div v-for="(def, index) in classDefinitions" :key="def.accessMod.name + def.abstract + index" class="p-4">
-        <ClassDefinition :allAbstractClasses="allAbstractClasses" :classDef="def"
+        <ClassDefinition :allAbstractClasses="allAbstractClasses.filter(c => c.name !== def.name)" :classDef="def"
                          @delete="() => duplicateClassName && deleteClass(index)"></ClassDefinition>
       </div>
       <Button class="text-[#4caf50] m-4" icon="pi pi-plus" label="New Class" @click="newClass"/>
     </div>
-    <div class="flex-1 w-2/5 p-1 pb-20">
+    <div class="flex-1 w-2/5 max-w-[40%] p-1 pb-20">
       <ClassCode :classDefs="classDefinitions" :enumName="enumName" :settings="settings"/>
     </div>
   </div>
@@ -28,6 +28,7 @@
 <script>
 import ClassDefinition from './ClassDefinition.vue';
 import ClassCode from './ClassCode.vue';
+import builtInClasses from '../assets/builtInClasses.json';
 
 export default {
   data() {
@@ -73,6 +74,10 @@ export default {
       this.classDefinitions.length = 0;
 
       reader.onloadend = () => {
+        /**
+         * The file contents
+         * @type {string}
+         */
         const content = reader.result;
         try {
           let parsed = JSON.parse(content);
@@ -88,7 +93,7 @@ export default {
   },
   computed: {
     allAbstractClasses() {
-      return this.classDefinitions.filter(def => def.abstract);
+      return this.classDefinitions.concat(this.builtInClassDefinitions).filter(def => def.abstract);
     },
     duplicateClassName() {
       const names = this.classDefinitions.map(def => def.name);
@@ -101,6 +106,9 @@ export default {
       }
       return null;
     }
+  },
+  created() {
+    this.builtInClassDefinitions.push(...builtInClasses);
   },
   components: {
     ClassDefinition,
