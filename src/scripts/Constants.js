@@ -1,6 +1,6 @@
 module.exports = {
     classes: {
-        Derealizable: 'Serializable',
+        Derealizable: 'Derealizable',
         SerializationFormatEnum: 'SerializationFormatEnum',
         SerializationReader: 'SerializationReader',
         SerializationWriter: 'SerializationWriter',

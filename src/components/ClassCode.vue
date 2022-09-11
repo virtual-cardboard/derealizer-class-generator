@@ -33,7 +33,7 @@
   <div v-if="abstractClasses.length" class="decorate my-4">
     <TabView scrollable>
       <TabPanel v-for="(def, index) in abstractClasses" :key="index" :header="def.name + 'Serializer.java'">
-        <div class="overflow-auto max-h-96 max-w-2xl">
+        <div class="overflow-auto max-h-96">
           <highlightjs
               :code="AbstractClassSerializerCodeGenerator.generateAbstractClassSerializerCode(enumName, def) || 'Incomplete class definition'"
               language="java"/>

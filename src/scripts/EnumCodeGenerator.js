@@ -17,27 +17,28 @@ class EnumCodeGenerator {
         if (!enumName) {
             throw "No enum name";
         }
+        const classPaths = Constants.fullClassPaths;
         const {
             Derealizable,
-            FieldNames,
-            SerializationDataType,
-            SerializationFormatEnum,
-        } = Constants.fullClassPaths;
+            // FieldNames,
+            // SerializationDataType,
+            // SerializationFormatEnum,
+        } = Constants.classes;
 
         // Generate import statements
-        let s = `import static ${SerializationDataType}.BOOLEAN;
-import static ${SerializationDataType}.BYTE;
-import static ${SerializationDataType}.LONG;
-import static ${SerializationDataType}.INT;
-import static ${SerializationDataType}.SHORT;
-import static ${SerializationDataType}.STRING_UTF8;
-import static ${SerializationDataType}.optional;
-import static ${SerializationDataType}.pojo;
-import static ${SerializationDataType}.repeated;
+        let s = `import static ${classPaths.SerializationDataType}.BOOLEAN;
+import static ${classPaths.SerializationDataType}.BYTE;
+import static ${classPaths.SerializationDataType}.LONG;
+import static ${classPaths.SerializationDataType}.INT;
+import static ${classPaths.SerializationDataType}.SHORT;
+import static ${classPaths.SerializationDataType}.STRING_UTF8;
+import static ${classPaths.SerializationDataType}.optional;
+import static ${classPaths.SerializationDataType}.pojo;
+import static ${classPaths.SerializationDataType}.repeated;
 
-import ${SerializationFormatEnum};
-import ${FieldNames};
-import ${Derealizable};
+import ${classPaths.SerializationFormatEnum};
+import ${classPaths.FieldNames};
+import ${classPaths.Derealizable};
 
 public enum ${enumName} implements SerializationFormatEnum {
 
@@ -54,7 +55,7 @@ public enum ${enumName} implements SerializationFormatEnum {
 
         // Generate fields
         s += "	;\n\n" +
-            "	private final Class<? extends Derealizable> serializableClass;\n";
+            `	private final Class<? extends ${Derealizable}> derealizableClass;\n`;
         if (settings.id) {
             s += "	private final short id;\n";
         }
@@ -62,15 +63,15 @@ public enum ${enumName} implements SerializationFormatEnum {
         // Generate constructor
         if (settings.id) {
             s += `
-	${enumName}(short id, Class<? extends Serializable> serializableClass) {
+	${enumName}(short id, Class<? extends ${Derealizable}> derealizableClass) {
 		this.id = id;
-		this.serializableClass = serializableClass;
+		this.derealizableClass = derealizableClass;
 	}
 `;
         } else {
             s += `
-	${enumName}(Class<? extends Serializable> serializableClass) {
-		this.serializableClass = serializableClass;
+	${enumName}(Class<? extends ${Derealizable}> derealizableClass) {
+		this.derealizableClass = derealizableClass;
 	}
 `;
         }
@@ -85,11 +86,11 @@ public enum ${enumName} implements SerializationFormatEnum {
 `;
         }
 
-        // Generate serializable class getter
+        // Generate derealizable class getter
         s += `
 	@Override
-	public Class<? extends Serializable> serializableClass() {
-		return serializableClass;
+	public Class<? extends ${Derealizable}> derealizableClass() {
+		return derealizableClass;
 	}
 	
 }

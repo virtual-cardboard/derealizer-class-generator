@@ -17,9 +17,9 @@ class ClassCodeGenerator {
         s += "import java.util.List;\n\n";
         const accessMod = classDefinition.accessMod.code;
         if (!classDefinition.superClass) {
-            s += `${accessMod ? accessMod + ' ' : ''}${classDefinition.abstract ? "abstract " : ""}class ${classDefinition.name} implements Serializable {\n`;
+            s += `${accessMod ? accessMod + ' ' : ''}${classDefinition.abstract ? "abstract " : ""}class ${classDefinition.name} implements Derealizable {\n`;
         } else {
-            s += `${accessMod ? accessMod + ' ' : ''}${classDefinition.abstract ? "abstract " : ""}class ${classDefinition.name} extends ${classDefinition.superClass.name} implements Serializable {\n`;
+            s += `${accessMod ? accessMod + ' ' : ''}${classDefinition.abstract ? "abstract " : ""}class ${classDefinition.name} extends ${classDefinition.superClass.name} implements Derealizable {\n`;
         }
         s += "\n";
         let fields = classDefinition.fields;
