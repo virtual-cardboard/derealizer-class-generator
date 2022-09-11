@@ -7,7 +7,7 @@
 		</span>
     <input-text v-model="classDefinition.name" placeholder="Name"/>
     <dropdown v-model="classDefinition.superClass" :filter="true"
-              :options="allAbstractClasses" :showClear="true"
+              :options="$store.getters.allAbstractClasses" :showClear="true"
               filterPlaceholder="Find..." option-label="name" placeholder="Superclass (optional)"/>
 
     <Button class="p-button-plain p-button-rounded p-button-text float-right" icon="pi pi-times"
@@ -33,7 +33,6 @@ import FieldType from './FieldType.vue';
 
 export default {
   props: {
-    allAbstractClasses: { type: Array, required: true },
     classDef: { type: Object, required: true },
   },
   emits: ['delete'],

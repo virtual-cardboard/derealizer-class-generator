@@ -2,7 +2,7 @@
   <div class="flex p-2 w-full overflow-x-clip">
     <div class="flex-1 w-3/5 max-w-[60%] pr-8">
       <div class="m-4">
-        <Button :disabled="!classDefinitions.length" class="p-button-secondary mr-4" icon="pi pi-upload"
+        <Button :disabled="!$store.state.classDefinitions.length" class="p-button-secondary mr-4" icon="pi pi-upload"
                 label="Export"
                 @click="exportClasses"/>
 
@@ -13,14 +13,14 @@
         <input ref="uploadInput" accept=".json" class="hidden" type="file" @change="e => parseClassesJsonFile(e)">
 
       </div>
-      <div v-for="(def, index) in classDefinitions" :key="def.accessMod.name + def.abstract + index" class="p-4">
-        <ClassDefinition :allAbstractClasses="allAbstractClasses.filter(c => c.name !== def.name)" :classDef="def"
-                         @delete="() => duplicateClassName && deleteClass(index)"></ClassDefinition>
+      <div v-for="(def, index) in $store.state.classDefinitions" :key="`${$store.state.numChanges}-${index}`"
+           class="p-4">
+        <ClassDefinition :classDef="def" @delete="() => deleteClass(index)"></ClassDefinition>
       </div>
       <Button class="text-[#4caf50] m-4" icon="pi pi-plus" label="New Class" @click="newClass"/>
     </div>
     <div class="flex-1 w-2/5 max-w-[40%] p-1 pb-20">
-      <ClassCode :classDefs="classDefinitions" :enumName="enumName" :settings="settings"/>
+      <ClassCode :classDefs="$store.state.classDefinitions" :enumName="enumName" :settings="settings"/>
     </div>
   </div>
 </template>
@@ -28,20 +28,17 @@
 <script>
 import ClassDefinition from './ClassDefinition.vue';
 import ClassCode from './ClassCode.vue';
-import builtInClasses from '../assets/builtInClasses.json';
 
 export default {
   data() {
     return {
       enumName: 'MySerializationFormats',
-      builtInClassDefinitions: [],
-      classDefinitions: [],
       settings: {},
     };
   },
   methods: {
     newClass() {
-      this.classDefinitions.push({
+      this.$store.commit('addClassDefinitions', {
         id: -1,
         accessMod: { name: 'public', code: 'public' },
         abstract: false,
@@ -51,14 +48,18 @@ export default {
       });
     },
     deleteClass(index) {
-      this.classDefinitions.splice(index, 1);
+      const classDefinitions = [...this.$store.state.classDefinitions];
+      classDefinitions.splice(index, 1);
+      this.$store.commit('setClassDefinitions', classDefinitions);
+
+      this.$store.commit('increaseNumChanges');
     },
     exportClasses() {
       const downloadAnchor = document.getElementById("downloadAnchor");
 
       let json = JSON.stringify({
         enumName: this.enumName,
-        classDefinitions: this.classDefinitions,
+        classDefinitions: this.$store.state.classDefinitions,
         settings: this.settings,
       });
       downloadAnchor.setAttribute('href', URL.createObjectURL(new Blob([json])));
@@ -71,7 +72,7 @@ export default {
       const reader = new FileReader();
 
       // Clear the class definitions array
-      this.classDefinitions.length = 0;
+      this.$store.commit("setClassDefinitions", []);
 
       reader.onloadend = () => {
         /**
@@ -81,7 +82,7 @@ export default {
         const content = reader.result;
         try {
           let parsed = JSON.parse(content);
-          this.classDefinitions.push(...parsed.classDefinitions);
+          this.$store.commit("setClassDefinitions", parsed.classDefinitions);
           this.enumName = parsed.enumName;
           this.settings = parsed.settings;
         } catch (error) {
@@ -93,10 +94,10 @@ export default {
   },
   computed: {
     allAbstractClasses() {
-      return this.classDefinitions.concat(this.builtInClassDefinitions).filter(def => def.abstract);
+      return this.$store.getters.allClassDefinitions.filter(def => def.abstract);
     },
     duplicateClassName() {
-      const names = this.classDefinitions.map(def => def.name);
+      const names = this.$store.state.classDefinitions.map(def => def.name);
       const seen = {};
       for (const name of names) {
         if (seen[name]) {
@@ -108,7 +109,6 @@ export default {
     }
   },
   created() {
-    this.builtInClassDefinitions.push(...builtInClasses);
   },
   components: {
     ClassDefinition,
