@@ -97,7 +97,7 @@ class ClassCodeGenerator {
     }
 
     /**
-     * @param {string} name the name of the field
+     * @param {string | null} name the name of the field
      * @param {{name: string, parameter: any | undefined}} type the type of the field
      * @param {number} numIndents the number of indents to use
      * @param {number} variablesCount the number of nested variables so far, used for for-loop variable names
@@ -170,7 +170,7 @@ class ClassCodeGenerator {
                         `${indents}for (byte ${iterVariable} = 0, ${numVariable} = reader.readByte(); ${iterVariable} < ${numVariable}; ${iterVariable}++) {\n` +
                         this.toReadMethod(null, param, numIndents + 1, variablesCount + 1, newListName) +
                         `${indents}}\n` +
-                        `${indents}${newListName}.add(${newListName});\n`;
+                        `${indents}${listName}.add(${newListName});\n`;
                 }
                 case 'optional': {
                     const param = type.parameter;
