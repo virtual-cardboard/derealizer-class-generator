@@ -96,12 +96,20 @@ class ClassCodeGenerator {
         return s;
     }
 
+    /**
+     * @param {string} name the name of the field
+     * @param {{name: string, parameter: any | undefined}} type the type of the field
+     * @param {number} numIndents the number of indents to use
+     * @param {number} variablesCount the number of nested variables so far, used for for-loop variable names
+     * @param {string | null} listName the name of the list variable, if we are adding to a list
+     * @returns {string} the code for the read method
+     */
     toReadMethod(name, type, numIndents = 0, variablesCount = 0, listName = null) {
         let indents = "		";
         for (let i = 0; i < numIndents; i++) {
             indents += "	";
         }
-        if (listName == null) {
+        if (!listName) {
             // Set a field
             switch (type.name) {
                 case 'long':
@@ -131,6 +139,9 @@ class ClassCodeGenerator {
                 }
                 case 'obj': {
                     const param = type.parameter;
+                    if (param.abstract) {
+                        return `${indents}this.${name} = ${param.name}Serializer.deserialize(reader);\n`;
+                    }
                     return `${indents}this.${name} = new ${Util.toProperCase(param.name)}();\n` +
                         `${indents}this.${name}.read(reader);\n`;
                 }
@@ -157,9 +168,9 @@ class ClassCodeGenerator {
                     const newListName = "list" + variablesCount;
                     return `${indents}List<${Util.convertPrimitiveToWrapper(param)}> ${newListName} = new ArrayList<>();\n` +
                         `${indents}for (byte ${iterVariable} = 0, ${numVariable} = reader.readByte(); ${iterVariable} < ${numVariable}; ${iterVariable}++) {\n` +
-                        this.toReadMethod(null, param, numIndents + 1, variablesCount + 1, name) +
+                        this.toReadMethod(null, param, numIndents + 1, variablesCount + 1, newListName) +
                         `${indents}}\n` +
-                        `${indents}${name}.add(${newListName});\n`;
+                        `${indents}${newListName}.add(${newListName});\n`;
                 }
                 case 'optional': {
                     const param = type.parameter;
@@ -171,7 +182,7 @@ class ClassCodeGenerator {
                 }
                 case 'obj': {
                     const param = type.parameter;
-                    const objVarName = "pojo" + variablesCount;
+                    const objVarName = "obj" + variablesCount++;
                     return `${indents}${param.name} ${objVarName} = new ${param.name}();\n` +
                         `${indents}${objVarName}.read(reader);\n` +
                         `${indents}${listName}.add(${objVarName});\n`;
