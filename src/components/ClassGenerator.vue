@@ -40,7 +40,7 @@ export default {
     newClass() {
       this.$store.commit('addClassDefinitions', {
         id: -1,
-        accessMod: { name: 'public', code: 'public' },
+        accessMod: { name: 'public' },
         abstract: false,
         name: 'NewClass',
         superClass: null,

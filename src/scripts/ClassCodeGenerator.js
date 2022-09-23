@@ -1,5 +1,12 @@
 const Util = require('./Util');
 
+const accessModToCode = {
+    'public': 'public',
+    'protected': 'protected',
+    'private': 'private',
+    'package-private': ''
+}
+
 class ClassCodeGenerator {
     generateClassCode(enumName, classDefinition) {
         try {
@@ -15,7 +22,7 @@ class ClassCodeGenerator {
         let s = "";
         s += "import derealizer.format.Derealizable;\n";
         s += "import java.util.List;\n\n";
-        const accessMod = classDefinition.accessMod.code;
+        const accessMod = accessModToCode[classDefinition.accessMod.name];
         if (!classDefinition.superClass) {
             s += `${accessMod ? accessMod + ' ' : ''}${classDefinition.abstract ? "abstract " : ""}class ${classDefinition.name} implements Derealizable {\n`;
         } else {
@@ -36,7 +43,7 @@ class ClassCodeGenerator {
             }
         }
         for (const field of fields) {
-            s += `	${field.accessMod.code} ${field.transient ? "transient " : ""}${Util.convertTypeToString(field.type)} ${field.name};\n`;
+            s += `	${accessModToCode[field.accessMod.name]} ${field.transient ? "transient " : ""}${Util.convertTypeToString(field.type)} ${field.name};\n`;
         }
         s += "\n";
         // No-arg constructor

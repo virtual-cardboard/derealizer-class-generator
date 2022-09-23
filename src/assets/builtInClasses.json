@@ -2,102 +2,19 @@
   {
     "id": -1,
     "accessMod": {
-      "name": "public",
-      "code": "public"
+      "name": "public"
     },
     "abstract": false,
     "name": "Vector2f",
-    "superClass": null,
-    "fields": [
-      {
-        "accessMod": {
-          "name": "private",
-          "code": "private"
-        },
-        "transient": false,
-        "type": {
-          "name": "float"
-        },
-        "name": "x"
-      },
-      {
-        "accessMod": {
-          "name": "private",
-          "code": "private"
-        },
-        "transient": false,
-        "type": {
-          "name": "float"
-        },
-        "name": "y"
-      }
-    ]
+    "superClass": null
   },
   {
     "id": -1,
     "accessMod": {
-      "name": "public",
-      "code": "public"
+      "name": "public"
     },
     "abstract": false,
     "name": "PacketAddress",
-    "superClass": null,
-    "fields": [
-      {
-        "accessMod": {
-          "name": "private",
-          "code": "private"
-        },
-        "transient": false,
-        "type": {
-          "name": "byte"
-        },
-        "name": "b0"
-      },
-      {
-        "accessMod": {
-          "name": "private",
-          "code": "private"
-        },
-        "transient": false,
-        "type": {
-          "name": "byte"
-        },
-        "name": "b1"
-      },
-      {
-        "accessMod": {
-          "name": "private",
-          "code": "private"
-        },
-        "transient": false,
-        "type": {
-          "name": "byte"
-        },
-        "name": "b2"
-      },
-      {
-        "accessMod": {
-          "name": "private",
-          "code": "private"
-        },
-        "transient": false,
-        "type": {
-          "name": "byte"
-        },
-        "name": "b3"
-      },
-      {
-        "accessMod": {
-          "name": "private",
-          "code": "private"
-        },
-        "transient": false,
-        "type": {
-          "name": "short"
-        },
-        "name": "port"
-      }
-    ]
+    "superClass": null
   }
 ]
