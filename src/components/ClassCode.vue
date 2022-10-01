@@ -30,22 +30,6 @@
       Click "New Class" to create one!
     </div>
   </div>
-  <div v-if="abstractClasses.length" class="decorate my-4">
-    <TabView scrollable>
-      <TabPanel v-for="(def, index) in abstractClasses" :key="index" :header="def.name + 'Serializer.java'">
-        <div class="overflow-auto max-h-96">
-          <highlightjs
-              :code="AbstractClassSerializerCodeGenerator.generateAbstractClassSerializerCode(enumName, def) || 'Incomplete class definition'"
-              language="java"/>
-        </div>
-        <div v-if="AbstractClassSerializerCodeGenerator.generateAbstractClassSerializerCode(enumName, def)"
-             class="flex justify-end mt-4">
-          <Button class="p-button-outlined p-button-warning" icon="pi pi-copy" label="Copy to Clipboard"
-                  @click="Util.copyToClipboard(AbstractClassSerializerCodeGenerator.doGenerateAbstractClassSerializerCode(enumName, def), $toast)"/>
-        </div>
-      </TabPanel>
-    </TabView>
-  </div>
 </template>
 
 <script>
@@ -53,7 +37,6 @@ import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
 import ClassCodeGenerator from '@/scripts/ClassCodeGenerator';
 import EnumCodeGenerator from '@/scripts/EnumCodeGenerator';
-import AbstractClassSerializerCodeGenerator from '@/scripts/AbstractClassSerializerCodeGenerator';
 import Util from '@/scripts/Util';
 
 export default {
@@ -68,7 +51,6 @@ export default {
       activeIndex: 0,
       ClassCodeGenerator: ClassCodeGenerator,
       EnumCodeGenerator: EnumCodeGenerator,
-      AbstractClassSerializerCodeGenerator: AbstractClassSerializerCodeGenerator,
       Util: Util,
     }
   },

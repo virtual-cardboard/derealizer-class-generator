@@ -1,16 +1,16 @@
 module.exports = {
-    classes: {
-        Derealizable: 'Derealizable',
-        SerializationFormatEnum: 'SerializationFormatEnum',
-        SerializationReader: 'SerializationReader',
-        SerializationWriter: 'SerializationWriter',
-    },
-    fullClassPaths: {
-        Derealizable: 'derealizer.format.Derealizable',
-        SerializationFormatEnum: 'derealizer.format.SerializationFormatEnum',
-        SerializationReader: 'derealizer.SerializationReader',
-        SerializationWriter: 'derealizer.SerializationWriter',
-        SerializationDataType: "derealizer.datatype.SerializationDataType",
-        FieldNames: "derealizer.format.FieldNames",
-    }
+  classes: {
+    Derealizable: 'Derealizable',
+    DerealizerEnum: 'DerealizerEnum',
+    Derealizer: 'Derealizer',
+    SerializationReader: 'SerializationReader',
+    SerializationWriter: 'SerializationWriter',
+  },
+  fullClassPaths: {
+    Derealizable: 'derealizer.Derealizable',
+    DerealizerEnum: 'derealizer.DerealizerEnum',
+    Derealizer: 'Derealizer',
+    SerializationReader: 'derealizer.SerializationReader',
+    SerializationWriter: 'derealizer.SerializationWriter',
+  }
 }

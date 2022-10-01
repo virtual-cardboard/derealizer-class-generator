@@ -3,10 +3,8 @@
     <dropdown v-model="classDefinition.accessMod" :options="accessModOptions" option-label="name"/>
     <span class="field-checkbox">
 			<checkbox id="abstractCheckbox" v-model="classDefinition.abstract"
-                :binary="true" @change="() => classDefinition.root = classDefinition.root && classDefinition.abstract"/>
+                :binary="true"/>
 			<label for="abstractCheckbox">Abstract</label>
-      <checkbox v-if="classDefinition.abstract" id="rootCheckbox" v-model="classDefinition.root" :binary="true"/>
-			<label v-if="classDefinition.abstract" for="rootCheckbox">Is Root</label>
 		</span>
     <input-text v-model="classDefinition.name" placeholder="Name"/>
     <dropdown v-model="classDefinition.superClass" :filter="true"
@@ -56,7 +54,6 @@ export default {
         accessMod: this.accessModOptions[0],
         transient: false,
         type: null,
-        root: false,
         name: ''
       })
     },
