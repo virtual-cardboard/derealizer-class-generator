@@ -37,7 +37,9 @@ class ClassCodeGenerator {
     for (const field of fields) {
       s += `	${accessModToCode[field.accessMod.name]} ${field.transient ? "transient " : ""}${Util.convertTypeToString(field.type)} ${field.name};\n`;
     }
-    s += "\n";
+    if (fields.length) {
+      s += "\n";
+    }
     // No-arg constructor
     s += `	public ${classDefinition.name}() {\n`;
     s += "	}\n\n";
@@ -47,16 +49,14 @@ class ClassCodeGenerator {
       for (const field of fields) {
         s += `		this.${field.name} = ${field.name};\n`;
       }
-      s += "	}\n";
+      s += "	}\n\n";
     }
-    s += "\n";
     // byte[] Constructor
     if (!classDefinition.abstract) {
       s += `	public ${classDefinition.name}(byte[] bytes) {
 		read(new SerializationReader(bytes));
-	}\n`;
+	}\n\n`;
     }
-    s += "\n";
     // Read
     s += "	@Override\n";
     s += "	public void read(SerializationReader reader) {\n";

@@ -1,23 +1,18 @@
 <template>
-  <div v-if="classDefinitions.length" class="decorate">
+  <div v-if="abstractClasses.length" class="decorate mt-4">
     <TabView v-model:activeIndex="activeIndex" scrollable>
-      <TabPanel v-for="(def, index) in classDefinitions" :key="index" :header="def.name + '.java'">
+      <TabPanel v-for="(def, index) in abstractClasses" :header="def.name + 'Enum.java'" :key="index">
         <div class="overflow-auto max-h-96">
-          <highlightjs :code="ClassCodeGenerator.generateClassCode(enumName, def) || 'Incomplete class definition'"
-                       language="java"/>
+          <highlightjs
+              :code="EnumCodeGenerator.generateEnumCode(def, classDefinitions) || 'Incomplete class definition'"
+              language="java"/>
         </div>
-        <div v-if="ClassCodeGenerator.generateClassCode(enumName, def)" class="flex justify-end mt-4">
+        <div v-if="EnumCodeGenerator.generateEnumCode(def, classDefinitions)" class="flex justify-end mt-4">
           <Button class="p-button-outlined p-button-warning" icon="pi pi-copy" label="Copy to Clipboard"
-                  @click="Util.copyToClipboard(ClassCodeGenerator.generateClassCode(enumName, def), $toast)"/>
+                  @click="Util.copyToClipboard(EnumCodeGenerator.generateEnumCode(def, classDefinitions), $toast)"/>
         </div>
       </TabPanel>
     </TabView>
-  </div>
-  <div v-else class="border-0 decorate gradient-1">
-    <div class="p-20 text-center text-2xl">
-      You have no classes yet.<br/>
-      Click "New Class" to create one!
-    </div>
   </div>
 </template>
 
@@ -31,7 +26,6 @@ import Util from '@/scripts/Util';
 export default {
   props: {
     classDefs: { type: Array, required: true },
-    enumName: { type: String, required: true },
     settings: { type: Object, required: true },
   },
   data() {

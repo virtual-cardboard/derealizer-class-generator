@@ -2,9 +2,9 @@ const Util = require('./Util');
 const Constants = require('./Constants');
 
 class EnumCodeGenerator {
-  generateEnumCode(enumName, classDefinitions, settings) {
+  generateEnumCode(classDefinition, classDefinitions) {
     try {
-      const str = this.doGenerateEnumCode(enumName, classDefinitions, settings);
+      const str = this.doGenerateEnumCode(classDefinition, classDefinitions);
       const indexOfImportantPart = str.indexOf("public enum");
       return Util.convertStringToHTML(str.substring(0, 7) + "...\n\n" + str.substring(indexOfImportantPart));
     } catch (error) {
@@ -13,12 +13,8 @@ class EnumCodeGenerator {
     }
   }
 
-  doGenerateEnumCode(enumName, classDefinitions, settings) {
-    // TODO: Use settings
-    settings;
-    if (!enumName) {
-      throw "No enum name";
-    }
+  doGenerateEnumCode(classDefinition, classDefinitions) {
+    const enumName = classDefinition.name + "Enum";
     const classPaths = Constants.fullClassPaths;
     const {
       Derealizable,
@@ -36,10 +32,17 @@ public enum ${enumName} implements ${DerealizerEnum} {
 
     // Generate enum values
     for (const classDef of classDefinitions) {
-      s += `	${Util.toSnakeCase(classDef.name)}(${classDef.name}.class),\n`;
+      if (classDef.superClass === classDefinition) {
+        if (classDef.abstract) {
+          s += `	${Util.toSnakeCase(classDef.name)}(${classDef.name}.class, ${classDef.name}Enum.class),\n`;
+        } else {
+          s += `	${Util.toSnakeCase(classDef.name)}(${classDef.name}.class),\n`;
+        }
+      }
     }
 
-    s += `
+    s += `	;
+
 	private final Class<? extends ${Derealizable}> objClass;
 	private final Class<? extends ${DerealizerEnum}> derealizerEnum;
 

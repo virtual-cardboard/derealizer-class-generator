@@ -21,6 +21,7 @@
     </div>
     <div class="flex-1 w-2/5 max-w-[40%] p-1 pb-20">
       <ClassCode :classDefs="$store.state.classDefinitions" :enumName="enumName" :settings="settings"/>
+      <EnumCode :classDefs="$store.state.classDefinitions" :settings="settings"/>
     </div>
   </div>
 </template>
@@ -28,6 +29,7 @@
 <script>
 import ClassDefinition from './ClassDefinition.vue';
 import ClassCode from './ClassCode.vue';
+import EnumCode from "@/components/EnumCode";
 
 export default {
   data() {
@@ -48,7 +50,7 @@ export default {
       });
     },
     deleteClass(index) {
-      const classDefinitions = [...this.$store.state.classDefinitions];
+      const classDefinitions = [ ...this.$store.state.classDefinitions ];
       classDefinitions.splice(index, 1);
       this.$store.commit('setClassDefinitions', classDefinitions);
 
@@ -62,7 +64,7 @@ export default {
         classDefinitions: this.$store.state.classDefinitions,
         settings: this.settings,
       });
-      downloadAnchor.setAttribute('href', URL.createObjectURL(new Blob([json])));
+      downloadAnchor.setAttribute('href', URL.createObjectURL(new Blob([ json ])));
       downloadAnchor.click();
     },
     parseClassesJsonFile(e) {
@@ -112,7 +114,8 @@ export default {
   },
   components: {
     ClassDefinition,
-    ClassCode
+    ClassCode,
+    EnumCode,
   }
 }
 </script>
