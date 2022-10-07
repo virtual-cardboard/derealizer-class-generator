@@ -3,12 +3,12 @@
     <TabView v-model:activeIndex="activeIndex" scrollable>
       <TabPanel v-for="(def, index) in classDefinitions" :key="index" :header="def.name + '.java'">
         <div class="overflow-auto max-h-96">
-          <highlightjs :code="ClassCodeGenerator.generateClassCode(enumName, def) || 'Incomplete class definition'"
+          <highlightjs :code="ClassCodeGenerator.generateClassCode(def) || 'Incomplete class definition'"
                        language="java"/>
         </div>
-        <div v-if="ClassCodeGenerator.generateClassCode(enumName, def)" class="flex justify-end mt-4">
+        <div v-if="ClassCodeGenerator.generateClassCode(def)" class="flex justify-end mt-4">
           <Button class="p-button-outlined p-button-warning" icon="pi pi-copy" label="Copy to Clipboard"
-                  @click="Util.copyToClipboard(ClassCodeGenerator.generateClassCode(enumName, def), $toast)"/>
+                  @click="Util.copyToClipboard(ClassCodeGenerator.generateClassCode(def), $toast)"/>
         </div>
       </TabPanel>
     </TabView>
@@ -29,14 +29,8 @@ import EnumCodeGenerator from '@/scripts/EnumCodeGenerator';
 import Util from '@/scripts/Util';
 
 export default {
-  props: {
-    classDefs: { type: Array, required: true },
-    enumName: { type: String, required: true },
-    settings: { type: Object, required: true },
-  },
   data() {
     return {
-      classDefinitions: null,
       activeIndex: 0,
       ClassCodeGenerator: ClassCodeGenerator,
       EnumCodeGenerator: EnumCodeGenerator,
@@ -45,16 +39,11 @@ export default {
   },
   computed: {
     abstractClasses() {
-      return this.classDefs.filter(def => def.abstract);
+      return this.classDefinitions.filter(def => def.abstract);
     },
-  },
-  created() {
-    this.classDefinitions = this.classDefs;
-  },
-  watch: {
-    classDefs() {
-      this.classDefinitions = this.classDefs;
-    }
+    classDefinitions() {
+      return this.$store.state.classDefinitions;
+    },
   },
   components: {
     TabView, TabPanel,

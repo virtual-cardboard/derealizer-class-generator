@@ -9,7 +9,7 @@ const accessModToCode = {
 
 class ClassCodeGenerator {
 
-  generateClassCode(enumName, classDefinition) {
+  generateClassCode(classDefinition) {
     if (!classDefinition) return "";
     let s = "";
     s += "import derealizer.format.Derealizable;\n";

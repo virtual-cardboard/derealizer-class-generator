@@ -20,8 +20,8 @@
       <Button class="text-[#4caf50] m-4" icon="pi pi-plus" label="New Class" @click="newClass"/>
     </div>
     <div class="flex-1 w-2/5 max-w-[40%] p-1 pb-20">
-      <ClassCode :classDefs="$store.state.classDefinitions" :enumName="enumName" :settings="settings"/>
-      <EnumCode :classDefs="$store.state.classDefinitions" :settings="settings"/>
+      <ClassCode/>
+      <EnumCode/>
     </div>
   </div>
 </template>

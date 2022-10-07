@@ -24,13 +24,8 @@ import EnumCodeGenerator from '@/scripts/EnumCodeGenerator';
 import Util from '@/scripts/Util';
 
 export default {
-  props: {
-    classDefs: { type: Array, required: true },
-    settings: { type: Object, required: true },
-  },
   data() {
     return {
-      classDefinitions: null,
       activeIndex: 0,
       ClassCodeGenerator: ClassCodeGenerator,
       EnumCodeGenerator: EnumCodeGenerator,
@@ -39,16 +34,11 @@ export default {
   },
   computed: {
     abstractClasses() {
-      return this.classDefs.filter(def => def.abstract);
+      return this.classDefinitions.filter(def => def.abstract);
     },
-  },
-  created() {
-    this.classDefinitions = this.classDefs;
-  },
-  watch: {
-    classDefs() {
-      this.classDefinitions = this.classDefs;
-    }
+    classDefinitions() {
+      return this.$store.state.classDefinitions;
+    },
   },
   components: {
     TabView, TabPanel,
