@@ -1,6 +1,6 @@
 <template>
   <div>
-    <dropdown v-model="classDefinition.accessMod" :options="accessModOptions" option-label="name"/>
+    <dropdown v-model="classDefinition.accessMod" :options="classAccessModOptions" option-label="name"/>
     <span class="field-checkbox">
 			<checkbox id="abstractCheckbox" v-model="classDefinition.abstract"
                 :binary="true"/>
@@ -40,6 +40,11 @@ export default {
   data() {
     return {
       classDefinition: null,
+      classAccessModOptions: [
+        { name: 'private' },
+        { name: 'public' },
+        { name: 'package-private' }
+      ],
       accessModOptions: [
         { name: 'private' },
         { name: 'public' },

@@ -7,8 +7,10 @@
                        language="java"/>
         </div>
         <div v-if="ClassCodeGenerator.generateClassCode(def)" class="flex justify-end mt-4">
-          <Button class="p-button-outlined p-button-warning" icon="pi pi-copy" label="Copy to Clipboard"
+          <Button class="p-button-outlined p-button-warning mr-2" icon="pi pi-copy" label="Copy to Clipboard"
                   @click="Util.copyToClipboard(ClassCodeGenerator.generateClassCode(def), $toast)"/>
+          <Button class="p-button-outlined p-button-warning" icon="pi pi-copy" label="Download as .java"
+                  @click="Util.downloadJavaFile(ClassCodeGenerator.generateClassCode(def), `${def.name}.java`)"/>
         </div>
       </TabPanel>
     </TabView>

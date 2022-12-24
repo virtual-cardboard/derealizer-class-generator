@@ -32,7 +32,17 @@ class Util {
 
   copyToClipboard(text, toast) {
     navigator.clipboard.writeText(text);
-    toast.add({severity: "success", summary: "Copied to clipboard!", life: 3000});
+    toast.add({ severity: "success", summary: "Copied to clipboard!", life: 3000 });
+  }
+
+  downloadJavaFile(text, fileName) {
+    let element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', fileName);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
   }
 
   toCamelCase(s) {
