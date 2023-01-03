@@ -1,5 +1,5 @@
 <template>
-  <div class="sticky top-0 h-screen bg-gray-500 text-white p-2">
+  <div class="sticky top-0 left-0 h-screen bg-gray-500 text-white p-2">
     <div class="justify-center items-center p-1">
       <button @click="collapse" :class="`flex justify-center content-center transition-all hover:bg-green-400 p-3 rounded-full`">
         <font-awesome-icon icon="fa-solid fa-bars"/>
