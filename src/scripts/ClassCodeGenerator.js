@@ -28,13 +28,19 @@ class ClassCodeGenerator {
       for (const field of fields) {
         for (let j = 0; j < superFields.length; j++) {
           const superField = superFields[j];
-          if (field.name == superField.name) {
+          if (field.name === superField.name) {
             return `Field name '${field.name}' conflicts with superclass field name!`;
           }
         }
       }
     }
     for (const field of fields) {
+      if (!field) {
+        return "";
+      }
+      if (!field.type) {
+        return `Field '${field.name}' has no type!`;
+      }
       s += `	${accessModToCode[field.accessMod.name]} ${field.transient ? "transient " : ""}${Util.convertTypeToString(field.type)} ${field.name};\n`;
     }
     if (fields.length) {
@@ -119,11 +125,10 @@ class ClassCodeGenerator {
           const param = type.parameter;
           const iterVariable = "i" + variablesCount;
           const numVariable = "size" + variablesCount;
-          let s = `${indents}this.${name} = new ArrayList<>();\n` +
+          return `${indents}this.${name} = new ArrayList<>();\n` +
             `${indents}for (byte ${iterVariable} = 0, ${numVariable} = reader.readByte(); ${iterVariable} < ${numVariable}; ${iterVariable}++) {\n` +
             this.toReadMethod(null, param, numIndents + 1, variablesCount + 1, name) +
             indents + "}\n";
-          return s;
         }
         case 'optional': {
           const param = type.parameter;

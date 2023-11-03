@@ -6,7 +6,7 @@
                 :binary="true"/>
 			<label for="abstractCheckbox">Abstract</label>
 		</span>
-    <input-text v-model="classDefinition.name" placeholder="Name"/>
+    <input-text v-model="classDefinition.name" :class="!classDefinition.name && 'p-invalid'" placeholder="Name"/>
     <dropdown v-model="classDefinition.superClass" :filter="true"
               :options="$store.getters.allAbstractClasses" :showClear="true"
               filterPlaceholder="Find..." option-label="name" placeholder="Superclass (optional)"/>
@@ -20,7 +20,7 @@
         <checkbox id="transientCheckbox" v-model="field.transient" :binary="true"/>
         <label for="transientCheckbox">Transient </label>
         <FieldType v-model="field.type"/>
-        <input-text v-model="field.name" placeholder="Name"/>
+        <input-text v-model="field.name" :class="!field.name && 'p-invalid'" placeholder="Name"/>
         <Button class="p-button-plain p-button-rounded p-button-text" icon="pi pi-times" @click="deleteField(index)"/>
       </div>
       <Button class="text-[#4caf50] m-2" icon="pi pi-plus" label="New Field" @click="newField"/>
@@ -58,7 +58,7 @@ export default {
       this.classDefinition.fields.push({
         accessMod: this.accessModOptions[0],
         transient: false,
-        type: null,
+        type: { name: 'int' },
         name: ''
       })
     },

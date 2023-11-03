@@ -1,5 +1,5 @@
 <template>
-  <dropdown v-model="mutableModelValue" :options="typeOptions" filter option-label="name"/>
+  <dropdown v-model="mutableModelValue" :options="typeOptions" filter option-label="name" placeholder="Type"/>
   <FieldType v-if="showParameter" ref="parameterField" v-model="parameter"/>
   <dropdown v-else-if="showObjDropdown" v-model="mutableModelValue.parameter"
             :options="$store.getters.allClassDefinitions" filter option-label="name"/>
@@ -8,7 +8,12 @@
 
 <script>
 export default {
-  props: ['modelValue'],
+  props: {
+    modelValue: {
+      type: Object,
+      required: true,
+    }
+  },
   emits: ['update:modelValue'],
   data() {
     return {
